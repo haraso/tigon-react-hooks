@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "es5",
+    "jsx": "react",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "lib": ["DOM","ES2015"]
+  },
+  "exclude": ["node_modules", "tests"]
+}
