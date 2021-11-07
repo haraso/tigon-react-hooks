@@ -25,7 +25,7 @@
 ```tsx
 import { Store } from "@tigon/state-manager";
 
-const userNameStore = Store<String>("Mr. Developer");
+const userNameStore = Store<string>("Mr. Developer");
 
 ...
 
@@ -41,12 +41,58 @@ const Component: FC = () => {
 
 ---
 
-### useStoreValue
+### useStore with detector
 
 ```tsx
 import { Store } from "@tigon/state-manager";
 
-const userNameStore = Store<String>("Mr. Developer");
+const userNameStore = Store<string>("Mr. Developer");
+
+...
+
+import useStore from "@tigon/react-hooks/useStore";
+
+const Component: FC = () => {
+    const [userName, setUserName] = useStore(userNameStore, (state) => [state]);
+    return (
+        <input value={userName} onChange={(e) => setUserName(e.target.value)}/>
+    )
+}
+```
+
+---
+
+### useStore with detector and deps
+
+```tsx
+import { Store } from "@tigon/state-manager";
+
+const userNamesStore = Store<string[]>(["Mr. Developer", "user", "other user"]);
+
+...
+
+import useStore from "@tigon/react-hooks/useStore";
+
+const Component: FC<{idx: number}> = ({ idx }) => {
+    const [userName, setUserName] = useStore(userNameStore, (state) => [state[idx]], [idx]);
+    const onChange = (e) => setUserName((state) => {
+        state[idx] = e.target.value;
+        return state;
+    });
+    return (
+        <input value={userName[idx]} onChange={onChange}/>
+    )
+}
+```
+
+---
+
+### useStoreValue
+ - `useStoreValue(store, detector?, deps?)` It can be use with detector and deps.
+```tsx
+import { Store } from "@tigon/state-manager";
+
+const userNameStore = Store<string>("Mr. Developer");
 
 ...
 
@@ -67,7 +113,7 @@ const Component: FC = () => {
 ```tsx
 import { Store } from "@tigon/state-manager";
 
-const userNameStore = Store<String>("Mr. Developer");
+const userNameStore = Store<string>("Mr. Developer");
 
 ...
 

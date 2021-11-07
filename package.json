@@ -1,6 +1,6 @@
 {
   "name": "@tigon/react-hooks",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Tigon react-hooks",
   "scripts": {
     "prepublish": "npm run build",
@@ -31,8 +31,8 @@
     "react": "*"
   },
   "devDependencies": {
-    "@tigon/state-manager": "^0.1.0",
     "@testing-library/react-hooks": "^7.0.2",
+    "@tigon/state-manager": "^0.1.2",
     "@types/jest": "^27.0.2",
     "@types/react": "*",
     "jest": "^27.2.5",

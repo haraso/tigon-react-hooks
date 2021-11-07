@@ -98,4 +98,125 @@ describe("useStore tests", () => {
     expect(state_r2_1).toEqual(1);
   });
 
+  test('setState render with detector', () => {
+    const store = Store(0);
+    const component = jest.fn(() => useStore(store, (state) => [state]));
+    
+    renderHook(component);
+    expect(component).toBeCalledTimes(1);
+
+    act(() => {
+      const [, setState] = store();
+      setState(1);
+    });
+    expect(component).toBeCalledTimes(2);
+
+    act(() => {
+      const [, setState] = store();
+      setState(1);
+    });
+    expect(component).toBeCalledTimes(2);
+
+    act(() => {
+      const [, setState] = store();
+      setState(2);
+    });
+    expect(component).toBeCalledTimes(3);
+  });
+
+  test('setState render with detector and random deps', () => {
+    const store = Store({notDetected: 1, detected: 2});
+    const component = jest.fn(() =>{
+      useStore(store, ({detected}) => [detected], [Math.random()])
+    });
+
+    renderHook(component);
+    expect(component).toBeCalledTimes(1);
+
+    act(() => {
+      const [, setState] = store();
+      setState((state)=>({
+        ...state,
+        notDetected: 2,
+      }));
+    });
+    expect(component).toBeCalledTimes(1);
+
+    act(() => {
+      const [, setState] = store();
+      setState((state)=>({
+        ...state,
+        detected: 3,
+      }));
+    });
+    expect(component).toBeCalledTimes(2);
+
+    act(() => {
+      const [, setState] = store();
+      setState((state)=>({
+        ...state,
+        notDetected: 3,
+      }));
+    });
+    expect(component).toBeCalledTimes(2);
+  });
+
+  test('setState render with toggled detector and toggled deps', () => {
+    const store = Store({otherDetected: 1, detected: 2});
+    let key = "otherDetected"
+    const useToggle = ()=>key === "detected" ? (key = "otherDetected") : (key = "detected");
+    const component = jest.fn(() =>{
+      const key = useToggle();
+      useStore(store, (state) => [state[key]], [key]);
+    });
+
+    renderHook(component);
+    expect(component).toBeCalledTimes(1);
+
+    act(() => {
+      const [, setState] = store();
+      setState((state)=>({
+        ...state,
+        otherDetected: 2,
+      }));
+    });
+    expect(component).toBeCalledTimes(1);
+
+    act(() => {
+      const [, setState] = store();
+      setState((state)=>({
+        ...state,
+        detected: 3,
+      }));
+    });
+    expect(component).toBeCalledTimes(2);
+
+    act(() => {
+      const [, setState] = store();
+      setState((state)=>({
+        ...state,
+        otherDetected: 3,
+      }));
+    });
+    expect(component).toBeCalledTimes(3);
+
+    act(() => {
+      const [, setState] = store();
+      setState((state)=>({
+        ...state,
+        otherDetected: 4,
+      }));
+    });
+    expect(component).toBeCalledTimes(3);
+
+    act(() => {
+      const [, setState] = store();
+      setState((state)=>({
+        ...state,
+        detected: 3,
+      }));
+    });
+    expect(component).toBeCalledTimes(3);
+  });
+
 });
